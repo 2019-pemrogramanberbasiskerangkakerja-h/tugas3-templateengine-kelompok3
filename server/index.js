@@ -24,7 +24,7 @@ app.use((req, res, next) => {
 })
 
 app.post('/login', (req, res) => {
-    const { username, password } = req.params
+    const { username, password } = req.body
 
     const OK = 200
     const BAD_REQUEST = 400
@@ -32,7 +32,7 @@ app.post('/login', (req, res) => {
 
     const username_alphanumeric = /^[\w]+$/
     const password_length = /^(.{8,})$/
-    const password_strength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9 ]).+$/
+    const password_strength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9 ]).+$/i
 
     if (!username_alphanumeric.test(username))
         sendResponse(BAD_REQUEST, 'Username must contain alphanumeric characters only')
