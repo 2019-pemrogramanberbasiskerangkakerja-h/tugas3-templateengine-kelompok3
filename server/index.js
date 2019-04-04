@@ -1,5 +1,4 @@
 import express from 'express'
-import Validator from './validator'
 
 const app = express()
 const PORT = 5000
@@ -25,24 +24,24 @@ app.use((req, res, next) => {
 })
 
 app.post('/login', (req, res) => {
-    const sendError = message => res.status(400).send({ 'message': message })
+    const { username, password } = req.params
+
+    const OK = 200
+    const BAD_REQUEST = 400
+    const sendResponse = (code, message) => res.status(code).send({ message: message })
 
     const username_alphanumeric = /^[\w]+$/
     const password_length = /^(.{8,})$/
-    const password_strength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9 ]).+$/i
+    const password_strength = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z0-9 ]).+$/
 
     if (!username_alphanumeric.test(username))
-        sendError('Username must contain alphanumeric characters only')
-
+        sendResponse(BAD_REQUEST, 'Username must contain alphanumeric characters only')
     else if (!password_length.test(password))
-        sendError('Password must be 8 characters or longer')
-
+        sendResponse(BAD_REQUEST, 'Password must be 8 characters or longer')
     else if (!password_strength.test(password))
-        sendError('Password must contain at least 1 lowercase, 1 uppercase, 1 numeric, and 1 special character')
-
+        sendResponse(BAD_REQUEST, 'Password must contain at least 1 lowercase, 1 uppercase, 1 numeric, and 1 special character')
     else
-        res.status(200).send({ message: "GAS" })
+        sendResponse(OK, "GAS")
 })
 
-app.listen(PORT, () =>
-    console.log(`[ Express ] Running on port ${PORT}.`))
+app.listen(PORT, () => console.log(`[ Express ] Running on port ${PORT}.`))
